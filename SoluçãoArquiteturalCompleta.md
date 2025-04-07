@@ -177,6 +177,11 @@ Serviço gerenciado de fila de mensagens que permite a comunicação assíncrona
 
 - **SQS:** Garante a entrega confiável de mensagens mesmo com falhas momentâneas. Armazena mensagens de forma redundante em várias zonas de disponibilidade (AZs), garantindo alta confiabilidade. Suporta milhões de mensagens por segundo sem necessidade de configuração manual.
 
+#### 4. Conectividade
+Foi incluído o serviço de Direct Connect para estabelecer uma conexão dedicada e privada entre a infraestrutura local (on-premises) e a nuvem da AWS. Essa conexão não utiliza a internet pública, oferecendo maior largura de banda, menor latência e maior estabilidade na transferência de dados. Por isso, é especialmente indicada para aplicações que exigem alto desempenho, como a movimentação de grandes volumes de dados. Além disso, pode ser utilizada em conjunto com VPNs como solução de redundância e alta disponibilidade.
+
+Já a VPN na Cloud, por meio do serviço AWS Site-to-Site VPN, permite criar uma conexão segura e criptografada entre a rede local e a AWS, utilizando a internet pública como meio de transporte. É uma alternativa mais simples e rápida de ser implementada, com menor custo inicial em comparação ao Direct Connect. Embora apresente maior latência e possa estar sujeita a instabilidades da internet, é uma solução eficaz para pequenas e médias cargas de trabalho, ou ainda como uma opção de backup para conexões Direct Connect. Ambas as opções atendem diferentes necessidades de conectividade híbrida com segurança e flexibilidade.
+
 #### 5. Infraestrutura on-premises
 Algumas das aplicações legadas e monolíticas terão que ficar no ambiente on-premises. 
 
