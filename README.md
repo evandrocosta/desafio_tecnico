@@ -2,14 +2,17 @@
 
 A solução considera os pontos abaixo:
 
-✅ Cenário Atual AS-IS.\
-✅ Dimensionamento de recursos (CPU, memória, escalabilidade).\
-✅ Arquitetura proposta TO-BE.\
-✅ Diagrama da topologia da solução.\
-✅ Justificativa das escolhas tecnológicas.\
-✅ Monitoramento.\
-✅ Estratégias de FinOps para otimização de custos.\
-✅ Automação via IaC (Terraform, Ansible, etc.).\
-✅ Disaster Recovery.\
-✅ Segurança.
+✅ Cenário Atual AS-IS - Objetivo do Desafio.
+
+✅ Arquitetura Proposta TO-BE - Requisitos obrigatórios:
+- Dimensionamento de recursos.
+- Metodologia de FinOps.
+- Diagrama da Topologia.
+- Justificativas.
+- Estratégia de Automação.
+  
+✅ Requisitos diferenciais:
+- Plano de Disaster Recovery (DR).
+- Monitoramento e Observabilidade.
+- Modelo OSI e Segurança.
 
