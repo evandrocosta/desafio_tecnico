@@ -1,11 +1,11 @@
-**Solução Arquitetural para Migração de Sistema Legado para Modelo Híbrido**
+# Solução Arquitetural para Migração de Sistema Legado para Modelo Híbrido
 
 Autor: Evandro da Costa Vieira\
 Telefone: (61) 999357026\
 Email: <evandro.costajr@gmail.com>\
 <https://www.linkedin.com/in/evandro-da-costa-vieira-6160a3178/>
 
-**Introdução**
+## Introdução
 
 Esta proposta apresenta uma solução arquitetural para a migração de um sistema legado para um modelo híbrido (on-premises + cloud).
 
@@ -21,7 +21,7 @@ Neste projeto foi considerado os recursos da nuvem AWS para representação na *
 
 Por fim, foi abordada também a utilização de **automação via IaC** (Infraestrutura como Código) usando o Terraform. O uso de IaC permite a gestão automatizada de recursos tanto na nuvem quanto on-premises, por meio de código. No projeto, será detalhado onde e como a IaC pode ser aplicada para melhorar o gerenciamento da infraestrutura. Em cada seção do projeto, foram justificadas as escolhas tecnológicas, apresentando suas vantagens e desvantagens.
 
-**Cenário Atual AS-IS**
+## Cenário Atual AS-IS
 
 O sistema atual proposto é composto por tecnologias legadas, que foram projetadas e implantadas há um longo período. Esses sistemas apresentam diversas dificuldades, especialmente em termos de flexibilidade, escalabilidade, manutenção e custos. O sistema possui:
 
@@ -58,9 +58,9 @@ O sistema atual proposto é composto por tecnologias legadas, que foram projetad
 
 **Diagrama da Topologia da Solução Legada**
 
-![Topologia da Solução - Cenário Atual](/Topologia_da_Solução_Legada.png)
+![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Legada.png)
 
-**Dimensionamento de Recursos no Ambiente Legado**
+## Dimensionamento de Recursos no Ambiente Legado
 
 Para o levantamento dos dados do ambiente atual, serão feitas medições reais de uso por um período mínimo de 30 dias, sendo o ideal de 90 dias. Como se trata de um ambiente legado, caso não exista uma ferramenta de estudo de capacidade implantada, é possível utilizar soluções como Zabbix, Nagios, Prometheus + Grafana, entre outras. Para máquinas virtuais, pode-se utilizar o vROps para levantar o consumo de memória, CPU e armazenamento.
 
@@ -105,7 +105,7 @@ Serviços da AWS que escalam automaticamente e facilitam a gestão do ambiente:
 
 Além disso, é possível usar o Terraform para definir regras de escalabilidade como código (Infrastructure as Code - IaC), permitindo controle de versionamento e automação do dimensionamento na AWS (ou em outros provedores). A escolha do Terraform frente a outros serviços de IaC se dá por ele ser um provedor que se conecta com qualquer outro provedor de nuvem além da AWS. Ou seja, uma vez que os códigos forem feitos é possível criar a infra igual em qualquer outra nuvem.
 
-**Arquitetura Proposta TO-BE**
+## Arquitetura Proposta TO-BE
 
 A arquitetura desenhada leva em consideração as premissas de escalabilidade e a otimização de custos como prioritárias para atender o cliente. Essas premissas podem mudar de acordo com a necessidade do cliente, porém a mudança delas pode impactar parte ou toda a solução proposta.
 
@@ -118,11 +118,11 @@ A estratégia de migração adotada dado uma infraestrutura híbrida será a Rep
 \-Reduzir custos operacionais a longo prazo.\
 \-Melhorar a segurança e o desempenho.
 
-**Diagrama da Topologia da Solução Proposta**
+## Diagrama da Topologia da Solução Proposta
 
-![Topologia da Solução - Cenário Atual](/Topologia_da_Solução_Proposta.png)
+![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Proposta.png)
 
-**Justificativa das Escolhas Tecnológicas**
+## Justificativa das Escolhas Tecnológicas
 
 A arquitetura foi pensada para garantir alta disponibilidade, escalabilidade, performance, segurança, facilidade de migração e otimização de custos.
 
@@ -164,7 +164,7 @@ Para a parte da infraestrutura legada que não for compatível com recursos nuve
 - CloudWatch: Coleta métricas de uso (CPU, memória, disco, rede, etc.) de serviços AWS e aplicações. Cria alarmes para reagir automaticamente a eventos (ex: ativar Auto Scaling ou enviar alertas via SNS). É possível criar métricas personalizadas para serem usadas pelo Terraform.
 - CloudTrail: Registra todas as chamadas de API feitas na conta, incluindo o que foi feito, por quem, e quando. Permite saber exatamente quem criou, alterou ou excluiu recursos (e de onde). É possível configurar via Terraform para enviar os logs para S3.
 
-**Estratégias de FinOps para Otimização de Custos**
+## Estratégias de FinOps para Otimização de Custos
 
 Com a utilização de parte da infra na nuvem haverá uma redução de CAPEX, eliminando o custo de aquisição de equipamentos e melhor controle de OPEX, pois será pago apenas pelo que usa, facilitando o planejamento financeiro.
 
@@ -184,7 +184,7 @@ Savings Plans / Reserved Instances: economia de até 72% para uso previsível.
 
 **Rightsizing, Auto Scaling e Compute Optimizer:** Ajuste dinâmico dos recursos computacionais para evitar superprovisionamento. Análise do uso real das suas instâncias EC2, volumes EBS, funções Lambda, Auto Scaling groups e EKS Fargate. Sugere as opções de economia de custo, melhor desempenho e equilíbrio entre os dois. Preferência pelo uso de máquinas EC2 com processadores Graviton da AWS.
 
-**Automação via IaC**
+## Automação via IaC
 
 O uso de uma ferramenta de IaC é altamente recomendado, pois a Infraestrutura pode ser provisionada automaticamente e de forma consistente. Evita erros manuais e garante que ambientes sejam sempre criados da mesma forma (ex: dev, staging, prod).
 
@@ -197,7 +197,7 @@ A melhor ferramenta é a Terraform pois ela suporta múltiplos provedores (AWS, 
 5. **Monitoramento e Logging:** Integração com Prometheus, Grafana e CloudWatch para observabilidade contínua.
 6. **Orquestração com CI/CD:** Uso de Terraform Cloud/Enterprise ou pipelines (GitHub Actions, GitLab CI, Jenkins) para automação de deploys.
 
-**Infraestrutura de Disaster Recovery**
+## Infraestrutura de Disaster Recovery
 
 Ter uma infraestrutura de Disaster Recovery (DR) bem planejada traz diversas vantagens estratégicas e operacionais para a empresa. Os principais benefícios são:
 
@@ -210,9 +210,9 @@ Ter uma infraestrutura de Disaster Recovery (DR) bem planejada traz diversas van
 
 Para a infraestrutura de Disaster Recovery foi desenhada uma topologia Hot Site em que o ambiente de recuperação está em funcionamento constante, com dados e sistemas atualizados em tempo real. Nesse modelo tem-se o RTO (Objetivo de Tempo de Recuperação) e RPO (Objetivo de Ponto de Recuperação) muito baixos (quase imediatos). A escolha do modelo depende claro da criticidade de RTO e RPO necessários pela aplicação. Segue a topologia:
 
-![Topologia da Solução - Cenário Atual](/Topologia_da_Solução_Disaster_Recovery.png)
+![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Disaster_Recovery.png)
 
-**Segurança**
+## Segurança
 
 Definir claramente como será a comunicação entre os serviços para liberação dos acessos na Cloud e On-premise. Levantar as informações conforme abaixo:
 
