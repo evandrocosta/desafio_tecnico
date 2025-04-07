@@ -7,21 +7,15 @@ Email: <evandro.costajr@gmail.com>\
 
 ## Introdução
 
-Esta proposta apresenta uma solução arquitetural para a migração de um sistema legado para um modelo híbrido (on-premises + cloud).
+A proposta apresenta uma solução arquitetural para migrar um sistema legado para um modelo híbrido (on-premises + cloud), com foco em escalabilidade e otimização de custos. 
 
-Para o desenvolvimento do desenho da arquitetura, é imprescindível, inicialmente, a compreensão dos objetivos de negócio, bem como a análise das motivações para a migração de parte do sistema para a nuvem. As razões mais comuns para essa migração incluem a redução de custos, aumento de escalabilidade, flexibilidade, modernização de sistemas e melhoria no desempenho. Neste projeto, foram considerados como principais objetivos a escalabilidade e a otimização de custos.
+Inicialmente, é feita uma análise dos objetivos de negócio e das motivações da migração, seguida por uma avaliação detalhada da infraestrutura atual, incluindo servidores, redes, bancos de dados e licenças. 
 
-Será realizada uma avaliação detalhada dos recursos e da arquitetura existentes, com o objetivo de compreender como a infraestrutura local está configurada, incluindo servidores, sistemas de armazenamento, bancos de dados, redes, monitoramento, backup, entre outros. Além disso, serão identificadas as dependências e interconexões entre as aplicações, bancos de dados, redes e sistemas, bem como um levantamento das licenças e dos custos relacionados à infraestrutura atual.
+Com base nessa análise, será dimensionada a nova estrutura em nuvem, utilizando uma topologia genérica descrita no cenário “AS-IS” e representada com recursos da AWS na solução “TO-BE” — embora seja possível usar outras nuvens. A proposta inclui o uso de IaC (Infraestrutura como Código) com Terraform, para automação e melhor gestão da infraestrutura. Também foi feito o desenho da arquitetura de Disaster Recovery e algumas diretrizes de segurança importantes no projeto.
 
-Somente após a avaliação da infraestrutura existente será possível dimensionar os recursos a serem criados na nuvem e definir a topologia da solução que atenderá aos requisitos do sistema. Para este trabalho, foi considerada uma arquitetura genérica, que está descrita na seção "**Cenário Atual AS-IS**".
+As escolhas tecnológicas foram justificadas com prós e contras ao longo do projeto.
 
-Com a topologia definida, será realizado o **dimensionamento dos recursos** a serem provisionados na nuvem. Será avaliado o consumo de CPU, memória e armazenamento das máquinas existentes fazendo um comparativo com os serviços disponíveis na nuvem. Para a definição do serviço da nuvem a ser usado, é importante ter definido a melhor nuvem que atenderá a solução. Caso o critério de escolha da nuvem seja o menor custo, o comparativo pode ser feito através da calculadora pública das nuvens existentes ([AWS](https://calculator.aws/), [Azure](https://azure.microsoft.com/en-us/pricing/calculator/), [OCI](https://cloud.oracle.com/calc), [Google Cloud](https://cloud.google.com/products/calculator), dentre outras).
-
-Neste projeto foi considerado os recursos da nuvem AWS para representação na **topologia da solução proposta TO-BE**, porém eles podem ser substituídos pelos recursos equivalentes de qualquer uma das outras nuvens. Tal escolha foi feita para facilitar a representação e permitir também uma visão dos custos do projeto para definição das melhores **estratégias de FinOps** afim de otimizar os custos.
-
-Por fim, foi abordada também a utilização de **automação via IaC** (Infraestrutura como Código) usando o Terraform. O uso de IaC permite a gestão automatizada de recursos tanto na nuvem quanto on-premises, por meio de código. No projeto, será detalhado onde e como a IaC pode ser aplicada para melhorar o gerenciamento da infraestrutura. Em cada seção do projeto, foram justificadas as escolhas tecnológicas, apresentando suas vantagens e desvantagens.
-
-## Cenário Atual AS-IS
+## 1. Cenário Atual AS-IS
 
 O sistema atual proposto é composto por tecnologias legadas, que foram projetadas e implantadas há um longo período. Esses sistemas apresentam diversas dificuldades, especialmente em termos de flexibilidade, escalabilidade, manutenção e custos. O sistema possui:
 
@@ -60,7 +54,7 @@ O sistema atual proposto é composto por tecnologias legadas, que foram projetad
 
 ![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Legada.png)
 
-## Dimensionamento de Recursos no Ambiente Legado
+## 2. Dimensionamento de Recursos no Ambiente Legado
 
 Para o levantamento dos dados do ambiente atual, serão feitas medições reais de uso por um período mínimo de 30 dias, sendo o ideal de 90 dias. Como se trata de um ambiente legado, caso não exista uma ferramenta de estudo de capacidade implantada, é possível utilizar soluções como Zabbix, Nagios, Prometheus + Grafana, entre outras. Para máquinas virtuais, pode-se utilizar o vROps para levantar o consumo de memória, CPU e armazenamento.
 
@@ -72,7 +66,7 @@ Para o levantamento dos dados do ambiente atual, serão feitas medições reais 
 
 Os recursos dimensionados podem ser traduzidos para recursos em nuvem com base no perfil das máquinas. Tomando como exemplo as instâncias da AWS:
 
-- \- **Uso geral:**
+- **Uso geral:**
   - _Família t (ex: t3, t4g)_: Ideal para cargas variáveis, leves e de baixo custo.
   - _Família m (ex: m6i, m8g)_: Balanceadas entre CPU, RAM e rede. Indicadas para aplicações web, APIs e bancos de dados de pequeno porte.
 - **Otimizado para CPU:**
@@ -87,25 +81,25 @@ Os recursos dimensionados podem ser traduzidos para recursos em nuvem com base n
 
 Escolher corretamente os recursos na criação das instâncias é essencial para estimar custos. Contudo, é possível alterar as famílias de instância conforme a necessidade. A própria AWS disponibiliza o AWS Compute Optimizer, que analisa o uso real de instâncias EC2, volumes EBS, funções Lambda, grupos de Auto Scaling e Kubernetes Fargate, sugerindo:
 
-\-Troca de tipo de instância;
+- Troca de tipo de instância;
 
-\-Aumento ou redução de recursos com base na utilização real;
+- Aumento ou redução de recursos com base na utilização real;
 
-\-Otimização para evitar superdimensionamento.
+- Otimização para evitar superdimensionamento.
 
-Para realizar a **escalabilidade** de instâncias EC2, utiliza-se o Auto Scaling da AWS, que pode ser configurado para aumentar ou reduzir instâncias automaticamente com base em métricas como CPU, memória, uso de rede, fila de requisições ou métricas personalizadas via CloudWatch. O uso de Application Load Balancer (ALB) distribui o tráfego entre instâncias de forma inteligente, trabalhando junto com o Auto Scaling e sendo essencial para escalabilidade horizontal.
+Para realizar a **escalabilidade** de instâncias EC2, utiliza-se o Auto Scaling da AWS, que pode ser configurado para aumentar ou reduzir instâncias automaticamente com base em métricas como CPU, memória, uso de rede, fila de requisições ou métricas personalizadas via CloudWatch. O uso de Elastic Load Balancer (ELB) distribui o tráfego entre instâncias de forma inteligente, trabalhando junto com o Auto Scaling e sendo essencial para escalabilidade horizontal.
 
 Serviços da AWS que escalam automaticamente e facilitam a gestão do ambiente:
 
-**\-AWS Lambda:** Escala automaticamente até milhares de execuções simultâneas. Ideal para cargas irregulares ou orientadas a eventos (serverless).
+- **AWS Lambda:** Escala automaticamente até milhares de execuções simultâneas. Ideal para cargas irregulares ou orientadas a eventos (serverless).
 
-**\-Amazon ECS / EKS com Fargate:** Para containers e kubernetes, o Fargate escala automaticamente os serviços e gerencia a infraestrutura (serverless).
+- **Amazon ECS / EKS com Fargate:** Para containers e kubernetes, o Fargate escala automaticamente os serviços e gerencia a infraestrutura (serverless).
 
-**\-Amazon DocumentDB:** Possui escalabilidade de leitura e permite crescer o banco até 64TB por cluster.
+- **Amazon DocumentDB:** Possui escalabilidade de leitura e permite crescer o banco até 64TB por cluster.
 
 Além disso, é possível usar o Terraform para definir regras de escalabilidade como código (Infrastructure as Code - IaC), permitindo controle de versionamento e automação do dimensionamento na AWS (ou em outros provedores). A escolha do Terraform frente a outros serviços de IaC se dá por ele ser um provedor que se conecta com qualquer outro provedor de nuvem além da AWS. Ou seja, uma vez que os códigos forem feitos é possível criar a infra igual em qualquer outra nuvem.
 
-## Arquitetura Proposta TO-BE
+## 3. Arquitetura Proposta TO-BE
 
 A arquitetura desenhada leva em consideração as premissas de escalabilidade e a otimização de custos como prioritárias para atender o cliente. Essas premissas podem mudar de acordo com a necessidade do cliente, porém a mudança delas pode impactar parte ou toda a solução proposta.
 
@@ -122,49 +116,58 @@ A estratégia de migração adotada dado uma infraestrutura híbrida será a Rep
 
 ![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Proposta.png)
 
-## Justificativa das Escolhas Tecnológicas
+## 4. Justificativa das Escolhas Tecnológicas
 
 A arquitetura foi pensada para garantir alta disponibilidade, escalabilidade, performance, segurança, facilidade de migração e otimização de custos.
 
-**Computação:** O uso de serviços serverless (Fargate e Lambda) é sugerido preferencialmente pois com eles temos escalabilidade e no geral um menor custo se comparado com serviços gerenciados (EC2 e ECS).
+### 1. Computação
+O uso de serviços serverless (Fargate e Lambda) é sugerido preferencialmente pois com eles temos escalabilidade e no geral um menor custo se comparado com serviços gerenciados (EC2 e ECS).
 
-- Fargate: serve para aplicações em containers/kubernetes, escala automaticamente e sem a necessidade de gerenciar servidores.
-- Lambda: serve quando pode-se alterar a aplicação para usar funções pequenas, que tem eventos rápidos, workloads imprevisíveis ou intermitentes.
+- **Fargate:** serve para aplicações em containers/kubernetes, escala automaticamente e sem a necessidade de gerenciar servidores.
+- **Lambda:** serve quando pode-se alterar a aplicação para usar funções pequenas, que tem eventos rápidos, workloads imprevisíveis ou intermitentes.
 
 **Vantagens:** Ambos os serviços permitem uma diminuição considerável da carga operacional. Esse é o melhor cenário em termo de custo a longo prazo. No caso do Fargate escala rapidamente horizontal e verticalmente.
 
 **Desvantagens:** Exige mais tempo e esforço na migração que pode acarretar em custo maior de curto prazo, pois será necessário fazer algum tipo de desenvolvimento por parte da aplicação para se adaptar aos novos serviços.
 
-- EC2: Foi sugerida a utilização das instâncias EC2 com Auto Scaling Groups. As EC2 são usadas para a parte da aplicação que precisa de controle total da infra
+- **EC2:** Foi sugerida a utilização das instâncias EC2 com Auto Scaling Groups. As EC2 são usadas para a parte da aplicação que precisa de controle total da infra
 
 **Vantagens:** Executa workloads pesados ou que não são adequadas para ambientes serverless ou containers. É o caso da maioria das aplicações legadas e monolíticas. Usada com o Auto Scaling permitem escalabilidade automática, alta disponibilidade e performance otimizada.
 
 **Desvantagens:** exige gerenciamento da infraestrutura, o cliente é responsável por configurar, atualizar, aplicar patches e manter o sistema operacional. Existe uma sobrecarga operacional com backups, logs, monitoramento, rede, storage. No geral são mais caras do que infraestrutura serveless.
 
-- AWS Compute Optimizer: será usado na análise de toda a parte de compute Fargate, Lambda e EC2. Identifica instâncias e recursos superdimensionados, ajudando a economizar ao recomendar tamanhos menores mais adequados. Ferramenta gratuita para os principais recursos.
+- **AWS Compute Optimizer:** será usado na análise de toda a parte de compute Fargate, Lambda e EC2. Identifica instâncias e recursos superdimensionados, ajudando a economizar ao recomendar tamanhos menores mais adequados. Ferramenta gratuita para os principais recursos.
 
 Para a parte da infraestrutura legada que não for compatível com recursos nuvem, é possível migrar lift-shift do jeito que estão para recursos dedicado na nuvem. Para esses casos é recomendado deixar on-premise, pois no geral levá-las para a nuvem costuma ficar mais caro.
 
-**Banco de Dados:** A definição de qual banco na nuvem deve ser usado depende muito do funcionamento da aplicação, do tamanho do banco, IOPs etc.. Foram sugeridos os seguintes bancos na nuvem:
+### 2. Banco de Dados
+A definição de qual banco na nuvem deve ser usado depende muito do funcionamento da aplicação, do tamanho do banco, IOPs etc.. Foram sugeridos os seguintes bancos na nuvem:
 
-- Amazon DocumentDB: será usado para receber o banco MongoDB da aplicação. É
+- **Amazon DocumentDB:** será usado para receber o banco MongoDB da aplicação. É
 
 **Vantagens:** É um serviço gerenciado pela AWS, possui backups automáticos, aplicação de patches, atualizações e replicação feitos automaticamente. Permite adicionar réplicas de leitura para distribuir o tráfego e melhorar a performance. Suporte o failover automático entre zonas de disponibilidade.
 
 **Desvantagens:** Algumas operações, tipos de dados e comandos mais avançados do MongoDB não são suportados. Pode sair mais caro que rodar MongoDB em EC2, por isso a estimativa de custos deve ser feita antes.
 
-- RDS para Oracle e para SQL Server: Foi sugerido para as aplicações que tem baixa latência e precisam que os bancos Oracle e SQLServer estejam na nuvem também.
+- **RDS para Oracle e para SQL Server:** Foi sugerido para as aplicações que tem baixa latência e precisam que os bancos Oracle e SQLServer estejam na nuvem também.
 
 **Vantagens:** É um serviço de gerenciamento simplificado em que a AWS cuida de patching, backups automáticos, replicação, failover e atualizações menores do banco. Suporte nativo à replicação e failover automático para maior disponibilidade
 
 **Desvantagens:** Custo elevado devido ao licenciamento Oracle e SQL Server. No caso desses bancos é necessário avaliar o custo em outras nuvens como OCI e Azure, e verificar se não é melhor deixá-los on-premises.
 
-**Monitoração:** ferramentas como CloudWatch e CloudTrail garantem monitoramento e auditoria centralizados.
+### 3. Monitoração
+Ferramentas como CloudWatch e CloudTrail garantem monitoramento e auditoria centralizados.
 
-- CloudWatch: Coleta métricas de uso (CPU, memória, disco, rede, etc.) de serviços AWS e aplicações. Cria alarmes para reagir automaticamente a eventos (ex: ativar Auto Scaling ou enviar alertas via SNS). É possível criar métricas personalizadas para serem usadas pelo Terraform.
-- CloudTrail: Registra todas as chamadas de API feitas na conta, incluindo o que foi feito, por quem, e quando. Permite saber exatamente quem criou, alterou ou excluiu recursos (e de onde). É possível configurar via Terraform para enviar os logs para S3.
+- **CloudWatch:** Coleta métricas de uso (CPU, memória, disco, rede, etc.) de serviços AWS e aplicações. Cria alarmes para reagir automaticamente a eventos (ex: ativar Auto Scaling ou enviar alertas via SNS). É possível criar métricas personalizadas para serem usadas pelo Terraform.
+- **CloudTrail:** Registra todas as chamadas de API feitas na conta, incluindo o que foi feito, por quem, e quando. Permite saber exatamente quem criou, alterou ou excluiu recursos (e de onde). É possível configurar via Terraform para enviar os logs para S3.
 
-## Estratégias de FinOps para Otimização de Custos
+### 4. Infraestrutura on-premises
+Algumas das aplicações legadas e monolíticas terão que ficar no ambiente on-premises. 
+
+- **Instâncias de Computação:** Aplicações que estão obsoletas, com sistema operacional legado, que dependem de hardware específico ou tem restrições regulatórias ficarão no DataCenter.
+- **Banco de Dados:** Banco de dados como o Oracle e SQLServer que possuem licenças proprietárias são mais vantajosos em on-premises. Pode ser necessário também por questão de desempenho intensivo de I/O local e requisitos de conformidade, em que dados sensíveis devem permanecer em datacenters próprios por exigência legal (LGPD, HIPAA, etc.).
+
+## 5. Estratégias de FinOps para Otimização de Custos
 
 Com a utilização de parte da infra na nuvem haverá uma redução de CAPEX, eliminando o custo de aquisição de equipamentos e melhor controle de OPEX, pois será pago apenas pelo que usa, facilitando o planejamento financeiro.
 
@@ -176,15 +179,15 @@ Manter um ambiente on-premises inclui os custos da infraestrutura física e tamb
 
 **Uso de Instâncias Reservadas e Spot:** Para as instâncias EC2 e RDS pode ser feito o aproveitamento de instâncias com desconto para workloads previsíveis e instâncias spot EC2 para processos não críticos.
 
-Instâncias Spot são até 90% mais baratas e boa para cargas temporárias, não críticas.
+- Instâncias Spot são até 90% mais baratas e boa para cargas temporárias, não críticas.
 
-Savings Plans / Reserved Instances: economia de até 72% para uso previsível.
+- Savings Plans / Reserved Instances: economia de até 72% para uso previsível.
 
 **Otimização de Armazenamento:** Implementação de políticas de lifecycle para mover dados menos acessados para classes de armazenamento mais baratas.
 
 **Rightsizing, Auto Scaling e Compute Optimizer:** Ajuste dinâmico dos recursos computacionais para evitar superprovisionamento. Análise do uso real das suas instâncias EC2, volumes EBS, funções Lambda, Auto Scaling groups e EKS Fargate. Sugere as opções de economia de custo, melhor desempenho e equilíbrio entre os dois. Preferência pelo uso de máquinas EC2 com processadores Graviton da AWS.
 
-## Automação via IaC
+## 6. Automação via IaC
 
 O uso de uma ferramenta de IaC é altamente recomendado, pois a Infraestrutura pode ser provisionada automaticamente e de forma consistente. Evita erros manuais e garante que ambientes sejam sempre criados da mesma forma (ex: dev, staging, prod).
 
@@ -197,22 +200,22 @@ A melhor ferramenta é a Terraform pois ela suporta múltiplos provedores (AWS, 
 5. **Monitoramento e Logging:** Integração com Prometheus, Grafana e CloudWatch para observabilidade contínua.
 6. **Orquestração com CI/CD:** Uso de Terraform Cloud/Enterprise ou pipelines (GitHub Actions, GitLab CI, Jenkins) para automação de deploys.
 
-## Infraestrutura de Disaster Recovery
+## 7. Infraestrutura de Disaster Recovery
 
 Ter uma infraestrutura de Disaster Recovery (DR) bem planejada traz diversas vantagens estratégicas e operacionais para a empresa. Os principais benefícios são:
 
-1. Continuidade dos negócios: Minimiza o tempo de inatividade em caso de falhas, garantindo que os serviços essenciais continuem funcionando.
-2. Restauração rápida: Permite recuperação rápida de dados e sistemas, reduzindo o impacto financeiro e operacional.
-3. Proteção contra perda de dados: Garante que backups e réplicas estejam disponíveis para restaurar informações críticas.
-4. Redução de perdas financeiras: Minimiza prejuízos relacionados à paralisação de sistemas, perda de vendas ou multas contratuais.
-5. Maior segurança e conformidade: Atende a requisitos legais e regulatórios sobre continuidade de serviços e proteção de dados.
-6. Ambiente de testes e simulações: DR permite testar atualizações e mudanças em um ambiente isolado, sem afetar a produção.
+1. **Continuidade dos negócios:** Minimiza o tempo de inatividade em caso de falhas, garantindo que os serviços essenciais continuem funcionando.
+2. **Restauração rápida:** Permite recuperação rápida de dados e sistemas, reduzindo o impacto financeiro e operacional.
+3. **Proteção contra perda de dados:** Garante que backups e réplicas estejam disponíveis para restaurar informações críticas.
+4. **Redução de perdas financeiras:** Minimiza prejuízos relacionados à paralisação de sistemas, perda de vendas ou multas contratuais.
+5. **Maior segurança e conformidade:** Atende a requisitos legais e regulatórios sobre continuidade de serviços e proteção de dados.
+6. **Ambiente de testes e simulações:** DR permite testar atualizações e mudanças em um ambiente isolado, sem afetar a produção.
 
 Para a infraestrutura de Disaster Recovery foi desenhada uma topologia Hot Site em que o ambiente de recuperação está em funcionamento constante, com dados e sistemas atualizados em tempo real. Nesse modelo tem-se o RTO (Objetivo de Tempo de Recuperação) e RPO (Objetivo de Ponto de Recuperação) muito baixos (quase imediatos). A escolha do modelo depende claro da criticidade de RTO e RPO necessários pela aplicação. Segue a topologia:
 
 ![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Disaster_Recovery.png)
 
-## Segurança
+## 8. Segurança
 
 Definir claramente como será a comunicação entre os serviços para liberação dos acessos na Cloud e On-premise. Levantar as informações conforme abaixo:
 
@@ -242,3 +245,17 @@ Vantagens do AWS WAF (Web Application Firewall):
 3. Monitoramento em tempo real: O AWS WAF fornece métricas e logs de acesso em tempo real por meio da integração com o Amazon CloudWatch, permitindo análises rápidas e detalhadas.
 4. Integração com serviços da AWS: O WAF pode ser utilizado em conjunto com serviços como o Amazon CloudFront, oferecendo proteção ampla para aplicações distribuídas.
 5. Regras gerenciadas: A AWS disponibiliza conjuntos de regras gerenciadas, mantidas e atualizadas automaticamente, que ajudam a proteger contra novas ameaças sem a necessidade de intervenção manual.
+
+## Considerações Finais
+A proposta apresentada resultou em uma solução arquitetural robusta para a migração de um sistema legado para um modelo híbrido (on-premises + cloud), atendendo aos principais objetivos definidos: escalabilidade e otimização de custos.
+
+A partir da compreensão dos objetivos de negócio e das motivações para a migração, foi possível estruturar uma arquitetura capaz de modernizar o ambiente tecnológico, proporcionando maior flexibilidade, desempenho e sustentabilidade financeira.
+
+A avaliação da infraestrutura atual — incluindo servidores, redes, sistemas de armazenamento, bancos de dados e licenças — permitiu identificar os recursos mais adequados a serem migrados ou mantidos localmente. A análise das interdependências entre os componentes também foi essencial para garantir uma transição segura e eficiente.
+
+Com base nessas informações, a arquitetura da solução foi dimensionada, considerando o consumo de recursos das máquinas atuais e comparando com os serviços disponíveis nas principais nuvens públicas. Embora tenha sido utilizada a AWS como referência para o desenho da topologia TO-BE, a solução permanece aplicável a outras plataformas, conforme as necessidades e restrições de cada organização. Caso o critério de escolha da nuvem seja o menor custo, o comparativo pode ser feito através da calculadora pública das nuvens existentes ([AWS](https://calculator.aws/), [Azure](https://azure.microsoft.com/en-us/pricing/calculator/), [OCI](https://cloud.oracle.com/calc), [Google Cloud](https://cloud.google.com/products/calculator), dentre outras).
+
+A proposta também incluiu o uso de IaC com Terraform, viabilizando a automação da infraestrutura e tornando o gerenciamento mais ágil, seguro e reprodutível, tanto no ambiente local quanto na nuvem.
+
+Em cada etapa do projeto, as escolhas tecnológicas foram devidamente justificadas, com análise de vantagens e desvantagens, contribuindo para uma solução arquitetural sólida, escalável e preparada para o futuro.
+
