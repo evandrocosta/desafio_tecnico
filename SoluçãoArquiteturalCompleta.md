@@ -1,11 +1,8 @@
 **Solução Arquitetural para Migração de Sistema Legado para Modelo Híbrido**
 
-Autor: Evandro da Costa Vieira
-
-Telefone: (61) 999357026
-
-Email: <evandro.costajr@gmail.com>
-
+Autor: Evandro da Costa Vieira\
+Telefone: (61) 999357026\
+Email: <evandro.costajr@gmail.com>\
 <https://www.linkedin.com/in/evandro-da-costa-vieira-6160a3178/>
 
 **Introdução**
@@ -61,7 +58,7 @@ O sistema atual proposto é composto por tecnologias legadas, que foram projetad
 
 **Diagrama da Topologia da Solução Legada**
 
-_Inserir Imagem Topologia Legada_
+![Topologia da Solução - Cenário Atual](/Topologia_da_Solução_Legada.png)
 
 **Dimensionamento de Recursos no Ambiente Legado**
 
@@ -116,17 +113,14 @@ A estratégia de migração adotada dado uma infraestrutura híbrida será a Rep
 
 **Objetivos**
 
-\-Modernizar o sistema legado sem interrupção do serviço.
-
-\-Aproveitar os recursos da nuvem para escalabilidade, disponibilidade e eficiência operacional.
-
-\-Reduzir custos operacionais a longo prazo.
-
+\-Modernizar o sistema legado sem interrupção do serviço.\
+\-Aproveitar os recursos da nuvem para escalabilidade, disponibilidade e eficiência operacional.\
+\-Reduzir custos operacionais a longo prazo.\
 \-Melhorar a segurança e o desempenho.
 
 **Diagrama da Topologia da Solução Proposta**
 
-_Inserir Imagem Topologia Proposta_
+![Topologia da Solução - Cenário Atual](/Topologia_da_Solução_Proposta.png)
 
 **Justificativa das Escolhas Tecnológicas**
 
@@ -203,10 +197,6 @@ A melhor ferramenta é a Terraform pois ela suporta múltiplos provedores (AWS, 
 5. **Monitoramento e Logging:** Integração com Prometheus, Grafana e CloudWatch para observabilidade contínua.
 6. **Orquestração com CI/CD:** Uso de Terraform Cloud/Enterprise ou pipelines (GitHub Actions, GitLab CI, Jenkins) para automação de deploys.
 
-Exemplo prático com Terraform (Auto Scaling com CPU):
-
-_Incluir link_
-
 **Infraestrutura de Disaster Recovery**
 
 Ter uma infraestrutura de Disaster Recovery (DR) bem planejada traz diversas vantagens estratégicas e operacionais para a empresa. Os principais benefícios são:
@@ -220,7 +210,7 @@ Ter uma infraestrutura de Disaster Recovery (DR) bem planejada traz diversas van
 
 Para a infraestrutura de Disaster Recovery foi desenhada uma topologia Hot Site em que o ambiente de recuperação está em funcionamento constante, com dados e sistemas atualizados em tempo real. Nesse modelo tem-se o RTO (Objetivo de Tempo de Recuperação) e RPO (Objetivo de Ponto de Recuperação) muito baixos (quase imediatos). A escolha do modelo depende claro da criticidade de RTO e RPO necessários pela aplicação. Segue a topologia:
 
-_Incluir link_
+![Topologia da Solução - Cenário Atual](/Topologia_da_Solução_Disaster_Recovery.png)
 
 **Segurança**
 
