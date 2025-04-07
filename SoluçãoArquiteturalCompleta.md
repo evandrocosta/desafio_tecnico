@@ -187,6 +187,8 @@ Manter um ambiente on-premises inclui os custos da infraestrutura física e tamb
 
 **Rightsizing, Auto Scaling e Compute Optimizer:** Ajuste dinâmico dos recursos computacionais para evitar superprovisionamento. Análise do uso real das suas instâncias EC2, volumes EBS, funções Lambda, Auto Scaling groups e EKS Fargate. Sugere as opções de economia de custo, melhor desempenho e equilíbrio entre os dois. Preferência pelo uso de máquinas EC2 com processadores Graviton da AWS.
 
+**Distribuição Geográfica:** Os recursos da nuvem tem custos diferentes dependendo da região. Por exemplo nas regiões dos Estados Unidos os recursos são mais baratos que na região do Brasil. Nesse caso, para economia sem afetar a performance, utiliza-se os ambientes de não-produção na região de Norte Virgínia por exemplo e o ambiente de produção no Brasil por questão de latência.
+
 ## 6. Automação via IaC
 
 O uso de uma ferramenta de IaC é altamente recomendado, pois a Infraestrutura pode ser provisionada automaticamente e de forma consistente. Evita erros manuais e garante que ambientes sejam sempre criados da mesma forma (ex: dev, staging, prod).
@@ -231,20 +233,20 @@ Cada serviço deverá seguir a premissa do menor acesso, sendo assim deve ser de
 
 Vantagens de segurança ao utilizar a nuvem (AWS):
 
-1. Segurança física e lógica de nível empresarial: Os data centers da AWS seguem padrões rigorosos de conformidade e certificações de segurança, como ISO 27001, SOC 1, SOC 2 e SOC 3.
-2. Atualizações automáticas de segurança: A AWS realiza a aplicação de patches e atualizações de segurança automaticamente nos serviços gerenciados, reduzindo riscos de vulnerabilidades.
-3. Isolamento de rede com VPCs: É possível criar redes privadas virtuais (VPCs) que permitem controle completo sobre a segmentação de rede, regras de roteamento e firewalls.
-4. Gerenciamento de identidade e acesso (IAM): O IAM da AWS possibilita definir políticas detalhadas de acesso e permissões com base em usuários, grupos ou funções, promovendo o princípio do menor privilégio.
-5. Criptografia de dados em trânsito e em repouso: A AWS oferece suporte nativo à criptografia de dados, com o uso de TLS/SSL em trânsito e AWS KMS ou HSM para dados armazenados.
-6. Monitoramento e auditoria integrados: Ferramentas como AWS CloudTrail, AWS Config e Amazon CloudWatch permitem monitoramento contínuo, auditoria e geração de alertas com base em atividades suspeitas ou anômalas.
+1. **Segurança física e lógica de nível empresarial:** Os data centers da AWS seguem padrões rigorosos de conformidade e certificações de segurança, como ISO 27001, SOC 1, SOC 2 e SOC 3.
+2. **Atualizações automáticas de segurança:** A AWS realiza a aplicação de patches e atualizações de segurança automaticamente nos serviços gerenciados, reduzindo riscos de vulnerabilidades.
+3. **Isolamento de rede com VPCs:** É possível criar redes privadas virtuais (VPCs) que permitem controle completo sobre a segmentação de rede, regras de roteamento e firewalls.
+4. **Gerenciamento de identidade e acesso (IAM):** O IAM da AWS possibilita definir políticas detalhadas de acesso e permissões com base em usuários, grupos ou funções, promovendo o princípio do menor privilégio.
+5. **Criptografia de dados em trânsito e em repouso:** A AWS oferece suporte nativo à criptografia de dados, com o uso de TLS/SSL em trânsito e AWS KMS ou HSM para dados armazenados.
+6. **Monitoramento e auditoria integrados:** Ferramentas como AWS CloudTrail, AWS Config e Amazon CloudWatch permitem monitoramento contínuo, auditoria e geração de alertas com base em atividades suspeitas ou anômalas.
 
 Vantagens do AWS WAF (Web Application Firewall):
 
-1. Proteção contra ameaças comuns na camada de aplicação: O AWS WAF protege contra ataques como injeção de SQL, cross-site scripting (XSS), bots maliciosos e ataques de negação de serviço (DDoS) direcionados a aplicações.
-2. Regras personalizáveis: É possível definir regras específicas com base em padrões de tráfego, como IPs de origem, strings nos headers, URIs, geolocalização, entre outros.
-3. Monitoramento em tempo real: O AWS WAF fornece métricas e logs de acesso em tempo real por meio da integração com o Amazon CloudWatch, permitindo análises rápidas e detalhadas.
-4. Integração com serviços da AWS: O WAF pode ser utilizado em conjunto com serviços como o Amazon CloudFront, oferecendo proteção ampla para aplicações distribuídas.
-5. Regras gerenciadas: A AWS disponibiliza conjuntos de regras gerenciadas, mantidas e atualizadas automaticamente, que ajudam a proteger contra novas ameaças sem a necessidade de intervenção manual.
+1. **Proteção contra ameaças comuns na camada de aplicação:** O AWS WAF protege contra ataques como injeção de SQL, cross-site scripting (XSS), bots maliciosos e ataques de negação de serviço (DDoS) direcionados a aplicações.
+2. **Regras personalizáveis:** É possível definir regras específicas com base em padrões de tráfego, como IPs de origem, strings nos headers, URIs, geolocalização, entre outros.
+3. **Monitoramento em tempo real:** O AWS WAF fornece métricas e logs de acesso em tempo real por meio da integração com o Amazon CloudWatch, permitindo análises rápidas e detalhadas.
+4. **Integração com serviços da AWS:** O WAF pode ser utilizado em conjunto com serviços como o Amazon CloudFront, oferecendo proteção ampla para aplicações distribuídas.
+5. **Regras gerenciadas:** A AWS disponibiliza conjuntos de regras gerenciadas, mantidas e atualizadas automaticamente, que ajudam a proteger contra novas ameaças sem a necessidade de intervenção manual.
 
 ## Considerações Finais
 A proposta apresentada resultou em uma solução arquitetural robusta para a migração de um sistema legado para um modelo híbrido (on-premises + cloud), atendendo aos principais objetivos definidos: escalabilidade e otimização de custos.
