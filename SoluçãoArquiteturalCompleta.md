@@ -129,7 +129,7 @@ Manter um ambiente on-premises inclui os custos da infraestrutura on-premise e t
 
 ### c. Diagrama da Topologia
 
-![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Proposta.png)
+![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Proposta_D1.png)
 
 
 
@@ -214,7 +214,7 @@ Ter uma infraestrutura de Disaster Recovery (DR) bem planejada traz diversas van
 
 Para a infraestrutura de Disaster Recovery foi desenhada uma topologia Hot Site em que o ambiente de recuperação está em funcionamento constante, com dados e sistemas atualizados em tempo real. Nesse modelo tem-se o RTO (Objetivo de Tempo de Recuperação) e RPO (Objetivo de Ponto de Recuperação) muito baixos (quase imediatos). A escolha do modelo depende claro da criticidade de RTO e RPO necessários pela aplicação. Segue a topologia:
 
-![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Disaster_Recovery.png)
+![Topologia da Solução - Cenário Atual](/Images/Topologia_da_Solução_Disaster_Recovery_Desafio.png)
 
 ### b. Monitoramento e Observabilidade
 Ferramentas como CloudWatch e CloudTrail garantem monitoramento e auditoria centralizados.
@@ -259,11 +259,11 @@ Vantagens do AWS WAF (Web Application Firewall):
 5. **Regras gerenciadas:** A AWS disponibiliza conjuntos de regras gerenciadas, mantidas e atualizadas automaticamente, que ajudam a proteger contra novas ameaças sem a necessidade de intervenção manual.
 
 ## Considerações Finais
-A proposta apresentada resultou em uma solução arquitetural robusta para a migração de um sistema legado para um modelo híbrido (on-premises + cloud), atendendo aos principais objetivos definidos: escalabilidade e otimização de custos.
+A proposta apresentada resultou em uma solução arquitetural robusta para a migração de um sistema legado para um modelo híbrido (on-premises + cloud), atendendo aos principais objetivos definidos:  escalabilidade e flexibilidade.
 
-A partir da compreensão dos objetivos de negócio e das motivações para a migração, foi possível estruturar uma arquitetura capaz de modernizar o ambiente tecnológico, proporcionando maior flexibilidade, desempenho e sustentabilidade financeira.
+A partir da compreensão dos objetivos de negócio e das motivações para a migração, foi possível estruturar uma arquitetura capaz de modernizar o ambiente tecnológico, proporcionando maior disponibilidade, escalabilidade, segurança, controle de acesso, otimização de custos, resiliência e recuperação (DR), automação e governança.
 
-A avaliação da infraestrutura atual — incluindo servidores, redes, sistemas de armazenamento, bancos de dados e licenças — permitiu identificar os recursos mais adequados a serem migrados ou mantidos localmente. A análise das interdependências entre os componentes também foi essencial para garantir uma transição segura e eficiente.
+A avaliação da infraestrutura atual — incluindo servidores, redes, sistemas de armazenamento e bancos de dados — permitiu identificar os recursos mais adequados a serem migrados ou mantidos localmente. A análise das interdependências entre os componentes também foi essencial para garantir uma transição segura e eficiente.
 
 Com base nessas informações, a arquitetura da solução foi dimensionada, considerando o consumo de recursos das máquinas atuais e comparando com os serviços disponíveis nas principais nuvens públicas. Embora tenha sido utilizada a AWS como referência para o desenho da topologia TO-BE, a solução permanece aplicável a outras plataformas, conforme as necessidades e restrições de cada organização. Caso o critério de escolha da nuvem seja o menor custo, o comparativo pode ser feito através da calculadora pública das nuvens existentes ([AWS](https://calculator.aws/), [Azure](https://azure.microsoft.com/en-us/pricing/calculator/), [OCI](https://cloud.oracle.com/calc), [Google Cloud](https://cloud.google.com/products/calculator), dentre outras).
 
